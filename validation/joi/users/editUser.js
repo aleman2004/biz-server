@@ -1,8 +1,7 @@
 import Joi from "joi";
 import phoneRegex from "../../../utils/phoneRegex.js";
-import passwordRegex from "../../../utils/passwordRegex.js";
 
-const registerSchema = Joi.object({
+const editUserSchema = Joi.object({
   name: Joi.object()
     .keys({
       first: Joi.string().min(2).max(256).required(),
@@ -11,20 +10,6 @@ const registerSchema = Joi.object({
     })
     .required(),
   phone: Joi.string().pattern(phoneRegex).required(),
-  email: Joi.string()
-    .email({ tlds: { allow: false } })
-    .min(5)
-    .max(500)
-    .required(),
-  password: Joi.string()
-    .pattern(new RegExp(passwordRegex))
-    .min(7)
-    .max(20)
-    .required()
-    .messages({
-      "string.pattern.base":
-        "Password must contain at least one uppercase, lowercase, special character(!@#$%^&*-), and number",
-    }),
   image: Joi.object().keys({
     url: Joi.string()
       .uri({ scheme: ["http", "https"] })
@@ -44,11 +29,10 @@ const registerSchema = Joi.object({
       zip: Joi.number().min(10000).max(9999999).required(),
     })
     .required(),
-  isBusiness: Joi.boolean().required(),
 });
 
-const registerSchemaValidation = (userInput) => {
-  return registerSchema.validateAsync(userInput);
+const editUserSchemaValidation = (userInput) => {
+  return editUserSchema.validateAsync(userInput);
 };
 
-export default registerSchemaValidation;
+export default editUserSchemaValidation;

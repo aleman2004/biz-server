@@ -6,11 +6,17 @@
 
 // var app = require('../app');
 // var http = require('http');
+import env from "dotenv";
+env.config();
 import app from "../app.js";
+import connectToDb from "../model/dbAdapter.js";
 import http from "http";
 import chalk from "chalk";
-import { connect } from "http2";
-import connectToDb from "../model/dbAdapter.js";
+
+import {
+  initialUsers,
+  initialCards,
+} from "../initialData/initalDataService.js";
 
 /**
  * Get port from environment and store in Express.
@@ -87,5 +93,9 @@ function onListening() {
   let addr = server.address();
   let bind = typeof addr === "string" ? addr : addr.port;
   console.log(chalk.green(`Listening on http://localhost:${bind}/`));
-  connectToDb();
+  connectToDb().then(async () => {
+    //this function will be executed when i connected to db
+    let bizId = await initialUsers();
+    if (bizId) await initialCards(bizId);
+  });
 }
